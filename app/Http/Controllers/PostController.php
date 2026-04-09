@@ -7,18 +7,31 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::all();
+        $search = $request->query('search');
+
+        $posts = Post::query()
+            ->when($search, function ($query, $search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('title', 'like', "%{$search}%")
+                        ->orWhere('lead', 'like', "%{$search}%")
+                        ->orWhere('content', 'like', "%{$search}%")
+                        ->orWhere('author', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('posts.index', [
             'posts' => $posts,
+            'search' => $search,
         ]);
     }
 
     public function show(string $slug)
     {
-        $post = Post::where('slug', $slug)->firstOrFail();
+        $post = Post::where('slug', $slug)->with('comments')->firstOrFail();
 
         return view('posts.show', [
             'post' => $post,
@@ -36,7 +49,6 @@ class PostController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'unique:posts,slug'],
             'lead' => ['nullable', 'string'],
-            'author' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string'],
         ]);
 
@@ -45,10 +57,8 @@ class PostController extends Controller
         $post->title = $parameters['title'];
         $post->slug = $parameters['slug'];
         $post->lead = $parameters['lead'] ?? null;
-        $post->author = $parameters['author'];
+        $post->author = $request->user()->name;
         $post->content = $parameters['content'];
-
-        // Post::create($parameters);
 
         $post->save();
 

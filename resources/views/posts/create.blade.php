@@ -10,7 +10,7 @@
             </ul>
         @endif
 
-        <label>Tytul</label>
+        <label>Tytuł</label>
         <input type="text" name="title" value="{{ old('title') }}" />
         @error('title')
             <div class="text-red-500">{{ $message }}</div>
@@ -23,10 +23,8 @@
         @enderror
 
         <label>Autor</label>
-        <input type="text" name="author" value="{{ old('author') }}" />
-        @error('author')
-            <div class="text-red-500">{{ $message }}</div>
-        @enderror
+        <input type="text" value="{{ auth()->user()->name }}" readonly class="bg-gray-100" />
+        <input type="hidden" name="author" value="{{ auth()->user()->name }}" />
 
         <label>Zajawka</label>
         <textarea name="lead">{{ old('lead') }}</textarea>
