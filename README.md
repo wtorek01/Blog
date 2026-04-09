@@ -1,3 +1,13 @@
+# Co zostało dodane
+
+- System logowania i rejestracji użytkowników
+- Możliwość wylogowania
+- Ochrona strony tworzenia postów dla zalogowanych użytkowników
+- Komentarze do postów
+- Dynamiczne wyświetlanie komentarzy pod postem
+- Wyszukiwanie postów po tytule, leadzie, treści i autorze
+- Link `📝 Blog` w lewym górnym rogu jako przycisk home
+
 # Blog
 
 A blog application built with Laravel 12, Filament v5, and Tailwind CSS v4. Features post management with a Filament admin panel.
